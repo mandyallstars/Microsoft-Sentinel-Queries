@@ -3,33 +3,38 @@
 // email/UPN - use the complete email address or Account UPN
 // firstname/lastname/fullname - use either of those as appropriate for the investigation
 // use function extractjson to extract info on a specific field in an item
+// check which timezoe the Microsoft Sentinel is set to.
 // this file has  multiple queries. Remember to use the initializing variables on the top with the queries you use.
 
 let userID = "<userID>";
 let email = "<email/UPN>";
 let name = "<firstname/lastname/fullname>";
 OfficeActivity
-| where TimeGenerated > 
+| where TimeGenerated > datetime(2022-03-27 14:00:00) //this time is in UTC
 | search "userID" or "email" or "name"
 | summarize count() by OfficeWorkload
 
 OfficeActivity
+| where TimeGenerated > datetime(2022-03-27 14:00:00) //this time is in UTC
 | search "userID" or "email" or "name"
 | where OfficeWorkload == "Exchange/SharePoint"
 
 OfficeActivity
+| where TimeGenerated > datetime(2022-03-27 14:00:00) //this time is in UTC
 | search "userID" or "email" or "name"
 | where OfficeWorkload == "Exchange"
 | extend FileName = extractjson ("$.Attachments", tostring(Item))
 | summarize count() by Operation, FileName
 
 OfficeActivity
+| where TimeGenerated > datetime(2022-03-27 14:00:00) //this time is in UTC
 | search "userID" or "email" or "name"
 | where OfficeWorkload == "Exchange"
 | where Operation == "SendAs"
 //| summarize count() by Client_IPAddress
 
 OfficeActivity
+| where TimeGenerated > datetime(2022-03-27 14:00:00) //this time is in UTC
 | search "userID" or "email" or "name"
 | where OfficeWorkload == "Exchange"
 | where Operation == "SendAs"
