@@ -5,7 +5,7 @@
 // 3. Workspace Usage Report
 // However, these workbooks do not breakdown the log sources within Syslog and CEF (Common Event Format)
 // which makes it hard to estimate cost for specific log source sending logs in one of these formats.
-// Examples include: Oracle databases sending Syslog format logs, CEF logs from Checkpoint or Tipping Point
+// Examples include: Oracle databases sending Syslog format logs, CEF logs from Check Point or Tipping Point
 
 // Estimating EPS for a specific Oracle database server sending logs in syslog format
 Syslog
@@ -26,3 +26,23 @@ Syslog
 // replace <costPerGB> with ingestion cost per GB of data for your specific currency. Information should be available on Microsoft website
 | extend ingestionCost = (SizeInGB*<costPerGB>)
 | extend estimatedCostForYear = ingestionCost*52
+
+// Estimating cost of mutliple log sources together
+let eDirectory = CommonSecurityLog
+| where DeviceProduct contains "eDirectory"
+| extend DataTable = "eDirectory";
+let IDM = CommonSecurityLog
+| where DeviceProduct contains "Identity Manager"
+| extend DataTable = "IdentityManager";
+let CheckPoint = CommonSecurityLog
+| where DeviceVendor contains "Check Point" // use DeviceProduct for specific sources within Check Point
+| extend DataTable = "CheckPoint";
+let OSSEC = CommonSecurityLog
+| where DeviceVendor contains "OSSEC"
+| extend DataTable = "OSSEC";
+union eDirectory, IDM, OSSEC, CheckPoint
+| summarize SizeInBytes = sum(estimate_data_size(*)) by DataTable
+| extend SizeInGB = toreal(SizeInBytes)/toreal(1000000000)
+// replace <costPerGB> with ingestion cost per GB of data for your specific currency. Information should be available on Microsoft website
+| extend ingestionCost = (SizeInGB*<costPerGB>)
+| summarize count() by DataTable
