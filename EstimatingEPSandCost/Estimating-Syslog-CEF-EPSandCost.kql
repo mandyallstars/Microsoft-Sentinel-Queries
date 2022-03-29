@@ -1,0 +1,28 @@
+// Use these queries to estimate EPS and Cost from different log sources
+// Microsoft Sentinel provides 3 build in workbooks for EPS, Cost and Usage calculations and these are:
+// 1. Data collection health monitoring
+// 2. Microsoft Sentinel Cost
+// 3. Workspace Usage Report
+// However, these workbooks do not breakdown the log sources within Syslog and CEF (Common Event Format)
+// which makes it hard to estimate cost for specific log source sending logs in one of these formats.
+// Examples include: Oracle databases sending Syslog format logs, CEF logs from Checkpoint or Tipping Point
+
+// Estimating EPS for a specific Oracle database server sending logs in syslog format
+Syslog
+| where Computer contains "Oracle"
+// keep in mind that Syslog messages from other oracle servers may contain the name of your database. add more filters to go more granular if required
+| where SyslogMessage contains "<oracle-instance>" //replace <oracle-database> with the specific Oracle instance of your interest
+| summarize count() by Computer, bin(TimeGenerated, 1s)
+| summarize avg(count_) by Computer
+
+// Estimating Cost for specific Oracle database server sending logs in syslog format
+// this is calculating cost over 7 days and then projecting that estimate over a year. Actual cost may vary and this is just for estimation purposes
+Syslog
+| where Computer contains "Oracle"
+// keep in mind that Syslog messages from other oracle servers may contain the name of your database. add more filters to go more granular if required
+| where SyslogMessage contains "<oracle-instance>" //replace <oracle-database> with the specific Oracle instance of your interest
+| summarize SizeInBytes = sum(estimate_data_size(*)) by Computer
+| extend SizeInGB = toreal(SizeInBytes)/toreal(1000000000)
+// replace <costPerGB> with ingestion cost per GB of data for your specific currency. Information should be available on Microsoft website
+| extend ingestionCost = (SizeInGB*<costPerGB>)
+| extend estimatedCostForYear = ingestionCost*52
