@@ -1,10 +1,11 @@
 // Use these queries to estimate EPS and Cost from different log sources
-// Microsoft Sentinel provides 3 build in workbooks for EPS, Cost and Usage calculations and these are:
+// Microsoft Sentinel provides 3 built in workbooks for EPS, Cost and Usage calculations and these are:
 // 1. Data collection health monitoring
 // 2. Microsoft Sentinel Cost
 // 3. Workspace Usage Report
 // However, these workbooks do not breakdown the log sources within Syslog and CEF (Common Event Format)
-// which makes it hard to estimate cost for specific log source sending logs in one of these formats.
+// as the Usage table which is used by Microsoft to breakdown costs does not breakdown sources within these tables.
+// This makes it hard to estimate cost for specific log source sending logs in one of these formats.
 // Examples include: Oracle databases sending Syslog format logs, CEF logs from Check Point or Tipping Point
 
 // Estimating EPS for a specific Oracle database server sending logs in syslog format
