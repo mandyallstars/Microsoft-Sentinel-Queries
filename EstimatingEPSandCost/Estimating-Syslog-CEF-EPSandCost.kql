@@ -6,7 +6,7 @@
 // However, these workbooks do not breakdown the log sources within Syslog and CEF (Common Event Format)
 // as the Usage table which is used by Microsoft to breakdown costs does not breakdown sources within these tables.
 // This makes it hard to estimate cost for specific log source sending logs in one of these formats.
-// Examples include: Oracle databases sending Syslog format logs, CEF logs from Check Point or Tipping Point
+// Examples include: Databases sending Syslog format logs, CEF logs from applications
 
 // Estimating EPS for a specific Oracle database server sending logs in syslog format
 Syslog
@@ -17,7 +17,7 @@ Syslog
 | summarize avg(count_) by Computer
 
 // Estimating Cost for specific Oracle database server sending logs in syslog format
-// this is calculating cost over 7 days and then projecting that estimate over a year. Actual cost may vary and this is just for estimation purposes
+// this is calculating cost over 7 days and then projecting that estimate over a year. Actual cost may vary. This is just for estimation purposes
 Syslog
 | where Computer contains "Oracle"
 // keep in mind that Syslog messages from other oracle servers may contain the name of your database. add more filters to go more granular if required
