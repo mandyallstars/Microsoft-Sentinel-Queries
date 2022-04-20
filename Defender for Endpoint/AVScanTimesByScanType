@@ -1,0 +1,11 @@
+//Use this query to find out AV Scan times for a device by the scan type
+let device = "<DeviceName>";
+DeviceEvents 
+| where  ActionType == "AntivirusScanCompleted"
+| where DeviceName contains "device" //or use DeviceName == device
+| extend ScanType = extractjson("$.ScanTypeIndex", tostring(AdditionalFields))
+| project DeviceName, TimeGenerated, ActionType, ScanType //, AdditionalFields
+| order by DeviceName, TimeGenerated
+| order by TimeGenerated
+// use the following to do summary on all devices and remove the filtering for Device Name
+//| summarize count() by DeviceName
