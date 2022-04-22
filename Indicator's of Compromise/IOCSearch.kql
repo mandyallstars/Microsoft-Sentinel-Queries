@@ -1,0 +1,100 @@
+let url_search = search ("bestergochair.com" or 
+"bestergochair.shop" or 
+"greenlight.netlify.app" or 
+"greenlightcanada.com" or 
+"iaclubbranford.com" or 
+"maybyrne.co.uk" or 
+"mcrwebhost.net" or 
+"paradisefootspa.com" or 
+"petslifenews.com" or 
+"restfulwinters.chathubserver.org" or 
+"stantest.com" or 
+"tsubux.com" or 
+"ullapoolholidayhomes.com" or 
+"zincone.com" or 
+"zinczone.com"); 
+
+let ip_search = search ("89.44.9.243" or
+"142.234.157.246" or
+"45.134.20.66" or
+"185.220.102.253" or
+"37.120.238.58" or
+"152.89.247.207" or
+"198.144.121.93" or
+"89.163.252.230" or
+"45.153.160.140" or
+"23.106.223.97" or
+"139.60.161.161" or
+"146.0.77.15" or
+"94.232.41.155"); 
+
+let email_search = search ("emma.bright@gov.public.signi.im"); 
+
+let file_search = search ("amd - Copy.ps1" or 
+"ipscan.ps1 " or 
+"Run1.ps1" or 
+"[###].ps1 " or 
+"[#].ps1 " or 
+"mim.ps1 " or 
+"psexec.ps1 " or 
+"System.ps1" or 
+"CheckVuln.bat" or 
+"Create-share-RunAsAdmin.bat" or
+"LPE-Exploit-RunAsUser.bat" or
+"RCE-Exploit-RunAsUser.bat" or
+"est.bat" or
+"runav.bat" or
+"http_x64.exe"
+"spider.dll" or
+"spider_32.dll" or
+"powershell.dll" or
+"rpcdump.exe" or
+"mimikatz.exe" or
+"run.exe" or
+"zakrep_plink.exe" or
+"beacon.exe" or
+"win1999.exe" or
+"[compromised company].exe " or
+"test.exe" or
+"Mim.exe" or
+"crackmapexec.exe" or
+"plink.exe" or
+"PsExec64.exe" or
+"xxx.exe" or
+"xxxw.exe" or
+"Services.exe" or
+"Systems.exe" or
+"CME.ps1" or
+"[##].ps1" or
+"Systems.ps1" or
+"" or); 
+
+let md5_search = search ("861738dd15eb7fb50568f0e39a69e107" or 
+"9f60dd752e7692a2f5c758de4eab3e6f" or 
+"09bc47d7bc5e40d40d9729cec5e39d73" or 
+"f5ef5142f044b94ac5010fd883c09aa7" or 
+"84e3b5fe3863d25bb72e25b10760e861" or 
+"9f2309285e8a8471fce7330fcade8619" or 
+"6c6c46bdac6713c94debbd454d34efd9" or 
+"e7ee8ea6fb7530d1d904cdb2d9745899" or 
+"815bb1b0c5f0f35f064c55a1b640fca5" or 
+"6c2874169fdfb30846fe7ffe34635bdb" or 
+"20855475d20d252dda21287264a6d860" or 
+"82db4c04f5dcda3bfcd75357adf98228" or
+"fcf3a6eeb9f836315954dae03459716d" or
+"91625f7f5d590534949ebe08cc728380"); 
+
+let sha1_search = search ("d241df7b9d2ec0b8194751cd5ce153e27cc40fa4" or 
+"4831c1b113df21360ef68c450b5fca278d08fae2" or 
+"fce13da5592e9e120777d82d27e06ed2b44918cf" or 
+"3f85f03d33b9fe25bcfac611182da4ab7f06a442" or 
+"37178dfaccbc371a04133d26a55127cf4d4382f8" or 
+"1b2a30776df64fbd7299bd588e21573891dcecbe"); 
+
+let sha256_search = search ("731adcf2d7fb61a8335e23dbee2436249e5d5753977ec465754c6b699e9bf161" or 
+"f837f1cd60e9941aa60f7be50a8f2aaaac380f560db8ee001408f35c1b7a97cb" or 
+"731adcf2d7fb61a8335e23dbee2436249e5d5753977ec465754c6b699e9bf161" or 
+"80dd44226f60ba5403745ba9d18490eb8ca12dbc9be0a317dd2b692ec041da28"); 
+
+//union ip_search, file_search, md5_search, sha1_search, sha256_search 
+union url_search, ip_search, file_search, md5_search, sha1_search, sha256_search 
