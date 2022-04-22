@@ -1,0 +1,9 @@
+// Use this query to check a user's network activity
+let AccountName = '<accountName>';
+let AccountUpn = '<accountUPN>';
+let deviceName = '<deviceName>';
+let 
+DeviceNetworkEvents
+| where InitiatingProcessAccountName == AccountName or InitiatingProcessAccountUpn == AccountUpn or DeviceName == deviceName
+| project TimeGenerated, ActionType, DeviceName, InitiatingProcessFileName, LocalIP, RemoteUrl
+| order by TimeGenerated asc
