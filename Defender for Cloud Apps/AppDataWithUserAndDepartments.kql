@@ -1,0 +1,38 @@
+// Works if you have an integration between MDCA/MDA (Microsoft Defender for Cloud Apps) and Microsoft Sentinel
+// Data for last 30 days. Change value for different time range
+// Taking applications that have App Score (Risk score above 4)
+let timeRange=ago(30d);
+let appScoreThreshold=3;
+let mcasDepartment = McasShadowItReporting
+| where TimeGenerated > timeRange
+| join kind=inner (IdentityInfo 
+| where TimeGenerated > timeRange
+| summarize arg_max(TimeGenerated, Department) by AccountUPN) on $left.EnrichedUserName == $right.AccountUPN
+| summarize AllDepartments = make_set(Department, 300) by AppName;
+let mcasUsers = McasShadowItReporting
+| where TimeGenerated > timeRange
+| join kind=inner (IdentityInfo
+| where TimeGenerated > timeRange
+| summarize arg_max(TimeGenerated, AccountUPN) by AccountUPN) on $left.EnrichedUserName == $right.AccountUPN
+| summarize AllUsers = make_set(AccountUPN, 6000) by AppName;
+let mcasTraffic = McasShadowItReporting
+| where TimeGenerated > timeRange
+| summarize totalTrafficInBytes = sum(TotalBytes), totalUploadInBytes = sum(UploadedBytes), totalDownloadedBytes = sum(DownloadedBytes) by AppName;
+let mcasContextualData = McasShadowItReporting
+| where TimeGenerated > timeRange
+| summarize distinctUserCount = dcount(EnrichedUserName), ApplicationCategory = make_set(AppCategory, 10) by AppName; //will not be able to output..
+// ..App Category without an aggregation function when using summarize
+let mcasLatestAppScore = McasShadowItReporting
+| where TimeGenerated > timeRange
+| summarize arg_max(TimeGenerated, AppScore) by AppName; // selecting the latest app score for the app using arg_max function
+mcasDepartment
+| join kind=inner mcasUsers on AppName
+| join kind=inner mcasTraffic on AppName
+| join kind=inner mcasContextualData on AppName
+| join kind=inner mcasLatestAppScore on AppName
+| extend totalTrafficInMB = format_bytes(totalTrafficInBytes, 2, 'MB'), uploadInMB = format_bytes(totalUploadInBytes, 2, 'MB'), downloadInMB = format_bytes(totalDownloadedBytes, 2, 'MB')
+| mv-expand ApplicationCategory
+| where AppScore > appScoreThreshold // filter by app score (Application Risk score greater than 3 i.e. >= 4) comment out this line for getting data for all cloud apps
+| project ['App Name']=AppName, ['App Category']=ApplicationCategory, ['App Score']=AppScore, ['All Departments']=AllDepartments, ['All Users']=AllUsers, ['Unique User Count']=distinctUserCount, ['Total Traffic']=totalTrafficInMB, ['Upload Traffic']=uploadInMB, ['Download Traffic']=downloadInMB
+| order by ['Unique User Count']
+| take 100 // comment out this line to data for all apps
