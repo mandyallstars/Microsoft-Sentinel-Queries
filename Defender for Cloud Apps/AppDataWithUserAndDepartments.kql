@@ -2,7 +2,7 @@
 // Data for last 30 days. Change value for different time range
 // Taking applications that have App Score (Risk score above 4)
 let timeRange=ago(30d);
-let appScoreThreshold=3;
+let appScoreThreshold=4;
 let mcasDepartment = McasShadowItReporting
 | where TimeGenerated > timeRange
 | join kind=inner (IdentityInfo 
@@ -32,7 +32,8 @@ mcasDepartment
 | join kind=inner mcasLatestAppScore on AppName
 | extend totalTrafficInMB = format_bytes(totalTrafficInBytes, 2, 'MB'), uploadInMB = format_bytes(totalUploadInBytes, 2, 'MB'), downloadInMB = format_bytes(totalDownloadedBytes, 2, 'MB')
 | mv-expand ApplicationCategory
-| where AppScore > appScoreThreshold // filter by app score (Application Risk score greater than 3 i.e. >= 4) comment out this line for getting data for all cloud apps
+| where AppScore < appScoreThreshold // filter by app score (Application Risk score greater than 3 i.e. >= 4) comment out this line for getting data for all cloud apps
+//| where AppName in ('Auryc', 'Treepodia', 'Uptracs') // to filter for specific apps
 | project ['App Name']=AppName, ['App Category']=ApplicationCategory, ['App Score']=AppScore, ['All Departments']=AllDepartments, ['All Users']=AllUsers, ['Unique User Count']=distinctUserCount, ['Total Traffic']=totalTrafficInMB, ['Upload Traffic']=uploadInMB, ['Download Traffic']=downloadInMB
 | order by ['Unique User Count']
-| take 100 // comment out this line to get data for all apps
+//| take 100 // comment out this line to get data for all apps
