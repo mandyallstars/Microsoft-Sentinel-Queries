@@ -13,8 +13,8 @@ let mcasUsers = McasShadowItReporting
 | where TimeGenerated > timeRange
 | join kind=inner (IdentityInfo
 | where TimeGenerated > timeRange
-| summarize arg_max(TimeGenerated, AccountUPN) by AccountUPN) on $left.EnrichedUserName == $right.AccountUPN
-| summarize AllUsers = make_set(AccountUPN, 6000) by AppName;
+| summarize arg_max(TimeGenerated, AccountDisplayName) by AccountUPN) on $left.EnrichedUserName == $right.AccountUPN
+| summarize AllUsers = make_set(AccountDisplayName, 6000) by AppName;
 let mcasTraffic = McasShadowItReporting
 | where TimeGenerated > timeRange
 | summarize totalTrafficInBytes = sum(TotalBytes), totalUploadInBytes = sum(UploadedBytes), totalDownloadedBytes = sum(DownloadedBytes) by AppName;
@@ -35,4 +35,4 @@ mcasDepartment
 | where AppScore > appScoreThreshold // filter by app score (Application Risk score greater than 3 i.e. >= 4) comment out this line for getting data for all cloud apps
 | project ['App Name']=AppName, ['App Category']=ApplicationCategory, ['App Score']=AppScore, ['All Departments']=AllDepartments, ['All Users']=AllUsers, ['Unique User Count']=distinctUserCount, ['Total Traffic']=totalTrafficInMB, ['Upload Traffic']=uploadInMB, ['Download Traffic']=downloadInMB
 | order by ['Unique User Count']
-| take 100 // comment out this line to data for all apps
+| take 100 // comment out this line to get data for all apps
