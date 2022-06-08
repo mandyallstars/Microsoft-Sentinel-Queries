@@ -9,6 +9,9 @@ let mcasDepartment = McasShadowItReporting
 | where TimeGenerated > timeRange
 | summarize arg_max(TimeGenerated, Department) by AccountUPN) on $left.EnrichedUserName == $right.AccountUPN
 | summarize AllDepartments = make_set(Department, 300) by AppName;
+//| summarize arg_max(TimeGenerated, Department, Manager) by AccountUPN) on $left.EnrichedUserName == $right.AccountUPN
+//| extend deptManager = strcat(Department, " - ", Manager, " (Manager)")
+//| summarize AllDepartments = make_set(deptManager, 300) by AppName;
 let mcasUsers = McasShadowItReporting
 | where TimeGenerated > timeRange
 | join kind=inner (IdentityInfo
