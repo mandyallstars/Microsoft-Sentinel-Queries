@@ -6,3 +6,17 @@ DeviceFileEvents
 | where FileExtension == "dll"
 | summarize count() by FileName, FolderPath, InitiatingProcessFileName, InitiatingProcessFolderPath
 | order by count_ asc
+
+
+//summarize count of files, join on hash for multiple devices
+DeviceFileEvents
+| where DeviceName == "<device1>"
+| join (DeviceFileEvents | where DeviceName  =~ "<device2>") on SHA256
+| join (DeviceFileEvents | where DeviceName  =~ "<device3>") on SHA256
+//has_any ("sgi-r913ew8e", "SGI-R913EW92", "SGI-R90Y2QRF")
+| extend FolderPathParts = parse_path(FolderPath)
+| extend FileExtension = FolderPathParts.Extension
+//| where FileExtension == "dll"
+| summarize count() by FileName, FolderPath, InitiatingProcessFileName, InitiatingProcessFolderPath, SHA256, SHA1, MD5
+//FileName, FolderPath, InitiatingProcessFileName, InitiatingProcessFolderPath
+| order by count_ asc
