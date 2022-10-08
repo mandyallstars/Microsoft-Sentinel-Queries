@@ -20,3 +20,15 @@ DeviceFileEvents
 | summarize count() by FileName, FolderPath, InitiatingProcessFileName, InitiatingProcessFolderPath, SHA256, SHA1, MD5
 //FileName, FolderPath, InitiatingProcessFileName, InitiatingProcessFolderPath
 | order by count_ asc
+
+Least occuring files of file extension types
+DeviceProcessEvents
+| where DeviceName has_any ("<device1>", "<device2>", "<device3>")
+| extend FolderPathParts = parse_path(FolderPath)
+| extend FileExtension = FolderPathParts.Extension
+//| where FileName matches regex @"^([a-z0-9]){1,3}\.exe$" or FileName matches regex @"^([a-z0-9]){3}\.com$" or
+//FileName matches regex @"^([a-z0-9]){3}\.bat$" or FileName matches regex @"^([a-z0-9]){3}\.dll$"
+| where FileExtension has_any ("exe", "dll", "com", "bat")
+| summarize count() by FileName, FolderPath, SHA256, SHA1, MD5
+| where count_ < 10
+| order by count_ asc
