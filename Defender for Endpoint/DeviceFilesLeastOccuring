@@ -1,0 +1,8 @@
+// summarize count of Files by count and order by least to max
+DeviceFileEvents
+| where DeviceName has_any ("<device1>", "<device2>", "<device3>")
+| extend FolderPathParts = parse_path(FolderPath)
+| extend FileExtension = FolderPathParts.Extension
+| where FileExtension == "dll"
+| summarize count() by FileName, FolderPath, InitiatingProcessFileName, InitiatingProcessFolderPath
+| order by count_ asc
