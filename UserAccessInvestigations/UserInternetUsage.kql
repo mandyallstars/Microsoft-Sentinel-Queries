@@ -3,7 +3,7 @@ let startTime = datetime(2022-12-01T00:00:00-04:00); // using ISO 8601 format, -
 //let endTime = now(); //startTime+1h; // https://en.wikipedia.org/wiki/ISO_8601#Time_offsets_from_UTC
 DeviceNetworkEvents
 | where TimeGenerated > startTime
-| where InitiatingProcessAccountName has_any ("<emailAlias>", "<AccountName>")
+| where InitiatingProcessAccountName has_any ("{AccountAlias}", "{AccountName}")
 | where InitiatingProcessFileName has_any ("msedge.exe", "chrome.exe", "firefox.exe")
 | where RemotePort in (80, 443)
 | where isnotempty(RemoteUrl)
